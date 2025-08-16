@@ -3,21 +3,12 @@ import { getCollectionDetails } from "@/lib/actions/actions";
 import Image from "next/image";
 import React from "react";
 
-const CollectionDetails = async ({
-  params,
-}: {
+interface CollectionPageProps {
   params: { collectionId: string };
-}) => {
-  const collectionDetails = await getCollectionDetails(params.collectionId);
+}
 
-  // Handle case where collection is not found
-  if (!collectionDetails) {
-    return (
-      <p className="text-body-bold text-center mt-10">
-        Sorry, this collection could not be found.
-      </p>
-    );
-  }
+const CollectionDetails = async ({ params }: CollectionPageProps) => {
+  const collectionDetails = await getCollectionDetails(params.collectionId);
 
   return (
     <div className="px-10 py-5 flex flex-col items-center gap-8">
@@ -33,19 +24,13 @@ const CollectionDetails = async ({
         {collectionDetails.description}
       </p>
       <div className="flex flex-wrap gap-16 justify-center">
-        {/* Handle case where there are no products in the collection */}
-        {collectionDetails.products.length === 0 ? (
-          <p className="text-body-bold">No products found in this collection.</p>
-        ) : (
-          collectionDetails.products.map((product: ProductType) => (
-            <ProductCard key={product._id} product={product} />
-          ))
-        )}
+        {collectionDetails.products.map((product: ProductType) => (
+          <ProductCard key={product._id} product={product} />
+        ))}
       </div>
     </div>
   );
 };
 
 export default CollectionDetails;
-
 export const dynamic = "force-dynamic";
