@@ -3,13 +3,7 @@ import { getCollectionDetails } from "@/lib/actions/actions";
 import Image from "next/image";
 import React from "react";
 
-import { Metadata } from "next";
-
-type Props = {
-  params: { collectionId: string };
-};
-
-export default async function CollectionDetails({ params }: Props) {
+const CollectionDetails = async ({ params }: { params: { collectionId: string } }) => {
   const collectionDetails = await getCollectionDetails(params.collectionId);
 
   if (!collectionDetails) {
@@ -39,6 +33,7 @@ export default async function CollectionDetails({ params }: Props) {
   );
 };
 
+export default CollectionDetails;
 
-// Force server rendering for always-fresh data
 export const dynamic = "force-dynamic";
+
