@@ -3,18 +3,16 @@ import { getCollectionDetails } from "@/lib/actions/actions";
 import Image from "next/image";
 import React from "react";
 
-// Define your param type separately for clarity
-interface CollectionPageProps {
-  params: {
-    collectionId: string;
-  };
-}
+import { Metadata } from "next";
 
-const CollectionDetails = async ({ params }: CollectionPageProps) => {
+type Props = {
+  params: { collectionId: string };
+};
+
+export default async function CollectionDetails({ params }: Props) {
   const collectionDetails = await getCollectionDetails(params.collectionId);
 
   if (!collectionDetails) {
-    // You can choose to handle not found explicitly
     return <div className="px-10 py-5 text-red-500">Collection not found.</div>;
   }
 
@@ -41,7 +39,6 @@ const CollectionDetails = async ({ params }: CollectionPageProps) => {
   );
 };
 
-export default CollectionDetails;
 
 // Force server rendering for always-fresh data
 export const dynamic = "force-dynamic";
