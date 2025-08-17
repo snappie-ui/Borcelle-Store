@@ -29,9 +29,23 @@ export const getProducts = async () => {
 }
 
 export const getProductDetails = async (productId: string) => {
-  const product = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${productId}`)
-  return await product.json()
-}
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/products/${productId}`,
+      { cache: "no-store" } // ensures fresh data on every request
+    );
+
+    if (!res.ok) {
+      console.error(`Failed to fetch product ${productId}: ${res.status}`);
+      return null; // handle missing or failed fetch gracefully
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error("Error fetching product details:", error);
+    return null;
+  }
+};
 
 export const getSearchedProducts = async (query: string) => {
   const searchedProducts = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/search/${query}`)
