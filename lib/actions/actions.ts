@@ -4,23 +4,9 @@ export const getCollections = async () => {
 }
 
 export const getCollectionDetails = async (collectionId: string) => {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/collections/${collectionId}`,
-      { cache: "no-store" } // ensures fresh data on every request
-    );
-
-    if (!res.ok) {
-      console.error(`Failed to fetch collection ${collectionId}: ${res.status}`);
-      return null; // handle missing or failed fetch gracefully
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error("Error fetching collection details:", error);
-    return null;
-  }
-};
+  const collection = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/collections/${collectionId}`)
+  return await collection.json()
+}
 
 
 export const getProducts = async () => {
@@ -29,23 +15,9 @@ export const getProducts = async () => {
 }
 
 export const getProductDetails = async (productId: string) => {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/products/${productId}`,
-      { cache: "no-store" } // ensures fresh data on every request
-    );
-
-    if (!res.ok) {
-      console.error(`Failed to fetch product ${productId}: ${res.status}`);
-      return null; // handle missing or failed fetch gracefully
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error("Error fetching product details:", error);
-    return null;
-  }
-};
+  const product = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${productId}`)
+  return await product.json()
+}
 
 export const getSearchedProducts = async (query: string) => {
   const searchedProducts = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/search/${query}`)

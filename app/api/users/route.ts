@@ -1,30 +1,47 @@
 import User from "@/lib/models/User";
 import { connectToDB } from "@/lib/mongoDB";
-import { auth } from "@clerk/nextjs/server";
 
+import { auth } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
-export const GET = async (req: NextRequest) => {
+export const POST = async (req: NextRequest) => {
   try {
     const { userId } = await auth()
 
     if (!userId) {
-      return new NextResponse(JSON.stringify({ message: "Unauthorized" }), { status: 401 })
+      return new NextResponse("Unauthorized", { status: 401 })
     }
 
     await connectToDB()
 
-    let user = await User.findOne({ clerkId: userId })
+    const user = await User.findOne({ clerkId: userId })
 
-    // When the user sign-in for the 1st, immediately we will create a new user for them
     if (!user) {
-      user = await User.create({ clerkId: userId })
-      await user.save()
+      return new NextResponse("User not found", { status: 404 })
     }
 
+    const { productId } = await req.json()
+
+    if (!productId) {
+      return new NextResponse("Product Id required", { status: 400 })
+    }
+
+    const isLiked = user.wishlist.includes(productId)
+
+    if (isLiked) {
+      // Dislike
+      user.wishlist = user.wishlist.filter((id: string) => id !== productId)
+    } else {
+      // Like
+      user.wishlist.push(productId)
+    }
+
+    await user.save()
+    
     return NextResponse.json(user, { status: 200 })
   } catch (err) {
-    console.log("[users_GET]", err)
-    return new NextResponse("Internal Server Error", { status: 500 })
+    console.log("[wishlist_POST]", err);
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
