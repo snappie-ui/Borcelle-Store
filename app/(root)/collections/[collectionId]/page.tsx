@@ -3,12 +3,13 @@ import { getCollectionDetails } from "@/lib/actions/actions";
 import Image from "next/image";
 import React from "react";
 
-const CollectionDetails = async ({ params }: { params: { collectionId: string } }) => {
-  const collectionDetails = await getCollectionDetails(params.collectionId);
-
-  if (!collectionDetails) {
-    return <div className="px-10 py-5 text-red-500">Collection not found.</div>;
-  }
+export default async function CollectionDetailsPage({
+  params,
+}: {
+  params: Promise<{ collectionId: string }>
+}) {
+  const { collectionId } = await params; // <-- must await now!
+  const collectionDetails = await getCollectionDetails(collectionId);
 
   return (
     <div className="px-10 py-5 flex flex-col items-center gap-8">
@@ -18,7 +19,6 @@ const CollectionDetails = async ({ params }: { params: { collectionId: string } 
         height={1000}
         alt="collection"
         className="w-full h-[400px] object-cover rounded-xl"
-        priority
       />
       <p className="text-heading3-bold text-grey-2">{collectionDetails.title}</p>
       <p className="text-body-normal text-grey-2 text-center max-w-[900px]">
@@ -31,9 +31,6 @@ const CollectionDetails = async ({ params }: { params: { collectionId: string } 
       </div>
     </div>
   );
-};
-
-export default CollectionDetails;
+}
 
 export const dynamic = "force-dynamic";
-
