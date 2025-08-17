@@ -31,7 +31,7 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Demo
 
-![Demo](demo/demo.mp4)
+![Demo](demo/Demo.gif)
 
 ## Deploy on Vercel
 
